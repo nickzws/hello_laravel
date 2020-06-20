@@ -50,16 +50,16 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|confirmed|min:6'
         ]);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-        Auth::login($user);
-        session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
-        return redirect()->route('users.show', [$user]);
-        //redirect()->route('users.show', [$user->id]);
 
+        $this->sendEmailConfirmationTo($user);
+        session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
+        return redirect()->route('users.show', [$user]);
     }
 
     public function update(User $user, Request $request)
@@ -93,5 +93,32 @@ class UsersController extends Controller
         Mail::send($view, $data, function ($message) use ($to, $subject) {
             $message->to($to)->subject($subject);
         });
+    }
+
+    public function confirmEmail($token)
+    {
+        $user = User::where('activation_token', $token)->firstOrFail();
+
+        $user->activated = true;
+        $user->activation_token = null;
+        $user->save();
+
+        Auth::login($user);
+        session()->flash('success', '恭喜你，激活成功！');
+        return redirect()->route('users.show', [$user]);
+    }
+
+    public function followings(User $user)
+    {
+        $users = $user->followings()->paginate(30);
+        $title = $user->name . '关注的人';
+        return view('users.show_follow', compact('users', 'title'));
+    }
+
+    public function followers(User $user)
+    {
+        $users = $user->followers()->paginate(30);
+        $title = $user->name . '的粉丝';
+        return view('users.show_follow', compact('users', 'title'));
     }
 }

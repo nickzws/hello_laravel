@@ -44,4 +44,26 @@ class User extends Authenticatable
         $hash = md5(strtolower(trim($this->attributes['email'])));
         return "http://www.gravatar.com/avatar/$hash?s=$size";
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($user) {
+            $user->activation_token = '1234554321';
+        });
+    }
+
+    public function str_rand($length = 32, $char = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    {
+        if (!is_int($length) || $length < 0) {
+            return false;
+        }
+
+        $string = '';
+        for ($i = $length; $i > 0; $i--) {
+            $string .= $char[mt_rand(0, strlen($char) - 1)];
+        }
+
+        return $string;
+    }
 }

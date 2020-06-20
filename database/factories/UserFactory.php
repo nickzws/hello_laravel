@@ -24,8 +24,23 @@ $factory->define(User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
 //        'email_verified_at' => time(),
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
-//        'created_at' => $date_time,
-//        'updated_at' => $date_time,
+//        'email_verified_at' => now(),
+        'activated' => true,
+        'remember_token' => '1234554321',
     ];
 });
+
+
+//public function str_rand($length = 32, $char = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+//{
+//    if (!is_int($length) || $length < 0) {
+//        return false;
+//    }
+//
+//    $string = '';
+//    for ($i = $length; $i > 0; $i--) {
+//        $string .= $char[mt_rand(0, strlen($char) - 1)];
+//    }
+//
+//    return $string;
+//}
