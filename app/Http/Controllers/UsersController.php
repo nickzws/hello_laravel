@@ -43,4 +43,17 @@ class UsersController extends Controller
 
     }
 
+    public function update(User $user, Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:50',
+            'password' => 'required|confirmed|min:6'
+        ]);
+        $user->update([
+            'name' => $request->name,
+            'password' => bcrypt($request->password),
+        ]);
+        return redirect()->route('users.show', $user->id);
+    }
+
 }
